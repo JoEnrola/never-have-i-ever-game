@@ -39,7 +39,6 @@
         let currentQuestionIndex = 0;
         let playerName = "";
         let responses = [];
-        let isHost = false;
 
         function startGame() {
             questions = document.getElementById("questionsInput").value.split("\n").filter(q => q.trim() !== "");
@@ -47,9 +46,13 @@
                 alert("Please enter some questions!");
                 return;
             }
-            localStorage.setItem("questions", JSON.stringify(questions)); // Save for others
-            document.getElementById("setupSection").style.display = "none";
-            document.getElementById("joinSection").style.display = "block";
+            
+            // Encode questions into URL
+            const encodedQuestions = encodeURIComponent(JSON.stringify(questions));
+            const newURL = window.location.origin + window.location.pathname + "?questions=" + encodedQuestions;
+            
+            // Update URL and reload for all players to get the same questions
+            window.location.href = newURL;
         }
 
         function joinGame() {
@@ -60,14 +63,6 @@
             }
             document.getElementById("joinSection").style.display = "none";
             document.getElementById("gameSection").style.display = "block";
-
-            // Load questions from host if not already set
-            if (questions.length === 0) {
-                let savedQuestions = localStorage.getItem("questions");
-                if (savedQuestions) {
-                    questions = JSON.parse(savedQuestions);
-                }
-            }
             displayQuestion();
         }
 
@@ -100,9 +95,12 @@
             displayQuestion();
         }
 
-        // Hide "Add Questions" if another player joins first
+        // Check if questions exist in URL
         window.onload = function() {
-            if (localStorage.getItem("questions")) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedQuestions = urlParams.get("questions");
+            if (encodedQuestions) {
+                questions = JSON.parse(decodeURIComponent(encodedQuestions));
                 document.getElementById("setupSection").style.display = "none";
                 document.getElementById("joinSection").style.display = "block";
             }
