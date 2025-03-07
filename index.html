@@ -42,6 +42,10 @@
         let responses = [];
         let isHost = false;
 
+        window.onload = function() {
+            document.getElementById("joinSection").style.display = "block";
+        };
+
         function joinGame() {
             playerName = document.getElementById("playerName").value.trim();
             if (!playerName) {
