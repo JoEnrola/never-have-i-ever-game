@@ -6,7 +6,7 @@
     <title>Never Have I Ever - Work Edition</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #joinSection, #gameSection, #questionInputSection { display: none; }
+        #joinSection, #gameSection { display: none; }
         button { padding: 10px; margin: 10px; cursor: pointer; }
         .response { font-weight: bold; margin-top: 10px; }
         #nextQuestionButton { display: none; }
@@ -21,12 +21,6 @@
         <button onclick="joinGame()">Join</button>
     </div>
 
-    <div id="questionInputSection">
-        <h3>Enter Questions (One per Line)</h3>
-        <textarea id="questionsInput" rows="10" cols="50"></textarea><br>
-        <button onclick="startGame()">Start Game</button>
-    </div>
-
     <div id="gameSection">
         <h2 id="questionDisplay"></h2>
         <button onclick="submitResponse('I have')">I Have</button>
@@ -36,7 +30,23 @@
     </div>
 
     <script>
-        let questions = [];
+        let questions = [
+            "Never have I ever… had a completely different career before this one.",
+            "Never have I ever… sent an email or message, then immediately regretted it.",
+            "Never have I ever… forgotten I was on mute and talked for way too long.",
+            "Never have I ever… used a work meeting as an excuse to avoid something else.",
+            "Never have I ever… had an awkward moment trying to remember a co-worker’s name.",
+            "Never have I ever… lived in another country or moved to a new city alone.",
+            "Never have I ever… started a hobby and completely abandoned it after two weeks.",
+            "Never have I ever… met someone famous (or thought I did and was wrong).",
+            "Never have I ever… been so confident in the wrong lyrics to a song that I convinced someone else.",
+            "Never have I ever… accidentally called someone by the wrong name for way too long.",
+            "Never have I ever… gotten hopelessly lost in a new city or country.",
+            "Never have I ever… eaten something strange just because I was curious.",
+            "Never have I ever… done something completely spontaneous, like booking a last-minute trip or road trip.",
+            "Never have I ever… had a pet that was NOT a cat or dog.",
+            "Never have I ever… laughed so hard I cried in a completely inappropriate setting."
+        ];
         let currentQuestionIndex = 0;
         let playerName = "";
         let responses = [];
@@ -54,39 +64,13 @@
             }
 
             document.getElementById("joinSection").style.display = "none";
-
-            if (playerName.toLowerCase() === "jo") {
-                isHost = true;
-                document.getElementById("questionInputSection").style.display = "block";
-            } else {
-                let savedQuestions = localStorage.getItem("questions");
-                if (savedQuestions) {
-                    questions = JSON.parse(savedQuestions);
-                    document.getElementById("gameSection").style.display = "block";
-                    displayQuestion();
-                } else {
-                    alert("Waiting for the host to start the game.");
-                    document.getElementById("joinSection").style.display = "block";
-                }
-            }
-        }
-
-        function startGame() {
-            if (isHost) {
-                let customQuestions = document.getElementById("questionsInput").value.split("\n").filter(q => q.trim() !== "");
-                if (customQuestions.length > 0) {
-                    questions = customQuestions;
-                    localStorage.setItem("questions", JSON.stringify(questions));
-                }
-            }
-
-            document.getElementById("questionInputSection").style.display = "none";
             document.getElementById("gameSection").style.display = "block";
             
-            if (isHost) {
+            if (playerName.toLowerCase() === "jo") {
+                isHost = true;
                 document.getElementById("nextQuestionButton").style.display = "block";
             }
-
+            
             displayQuestion();
         }
 
