@@ -9,7 +9,7 @@
         #joinSection, #gameSection { display: none; }
         button { padding: 10px; margin: 10px; cursor: pointer; }
         .response { font-weight: bold; margin-top: 10px; }
-        #nextQuestionButton { display: none; }
+        #nextQuestionButton, #showResponsesButton { display: none; }
     </style>
 </head>
 <body>
@@ -26,6 +26,7 @@
         <button onclick="submitResponse('I have')">I Have</button>
         <button onclick="submitResponse('I Haven\'t')">I Haven't</button>
         <div id="responses"></div>
+        <button id="showResponsesButton" onclick="showResponses()">Show Responses</button>
         <button id="nextQuestionButton" onclick="nextQuestion()">Next Question</button>
     </div>
 
@@ -69,6 +70,7 @@
             if (playerName.toLowerCase() === "jo") {
                 isHost = true;
                 document.getElementById("nextQuestionButton").style.display = "block";
+                document.getElementById("showResponsesButton").style.display = "block";
             }
             
             displayQuestion();
@@ -78,7 +80,7 @@
             if (currentQuestionIndex < questions.length) {
                 document.getElementById("questionDisplay").innerText = questions[currentQuestionIndex];
                 responses = [];
-                updateResponses();
+                document.getElementById("responses").innerHTML = "";
             } else {
                 document.getElementById("questionDisplay").innerText = "Game Over!";
                 document.getElementById("responses").innerText = "Thanks for playing!";
@@ -87,10 +89,9 @@
 
         function submitResponse(answer) {
             responses.push({ player: playerName, answer });
-            updateResponses();
         }
 
-        function updateResponses() {
+        function showResponses() {
             let responseHTML = "<h3>Responses:</h3>";
             responses.forEach(r => {
                 responseHTML += `<p><strong>${r.player}:</strong> ${r.answer}</p>`;
