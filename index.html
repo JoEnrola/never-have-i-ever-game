@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Never Have I Ever - Work Edition</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #joinSection, #gameSection { display: none; }
+        button { padding: 10px; margin: 10px; cursor: pointer; }
+        .response { font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Never Have I Ever - Work Edition</h1>
+
+    <div id="setupSection">
+        <h3>Enter Questions (One per Line)</h3>
+        <textarea id="questionsInput" rows="10" cols="50"></textarea><br>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <div id="joinSection">
+        <h3>Enter Your Name</h3>
+        <input type="text" id="playerName">
+        <button onclick="joinGame()">Join</button>
+    </div>
+
+    <div id="gameSection">
+        <h2 id="questionDisplay"></h2>
+        <button onclick="submitResponse('I have')">I Have</button>
+        <button onclick="submitResponse('I Haven\'t')">I Haven't</button>
+        <div id="responses"></div>
+        <button onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let playerName = "";
+        let responses = [];
+
+        function startGame() {
+            questions = document.getElementById("questionsInput").value.split("\n").filter(q => q.trim() !== "");
+            if (questions.length === 0) {
+                alert("Please enter some questions!");
+                return;
+            }
+            document.getElementById("setupSection").style.display = "none";
+            document.getElementById("joinSection").style.display = "block";
+        }
+
+        function joinGame() {
+            playerName = document.getElementById("playerName").value.trim();
+            if (!playerName) {
+                alert("Please enter your name!");
+                return;
+            }
+            document.getElementById("joinSection").style.display = "none";
+            document.getElementById("gameSection").style.display = "block";
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                document.getElementById("questionDisplay").innerText = questions[currentQuestionIndex];
+                responses = [];
+                document.getElementById("responses").innerHTML = "";
+            } else {
+                document.getElementById("questionDisplay").innerText = "Game Over!";
+                document.getElementById("responses").innerText = "Thanks for playing!";
+            }
+        }
+
+        function submitResponse(answer) {
+            responses.push({ player: playerName, answer });
+            updateResponses();
+        }
+
+        function updateResponses() {
+            let responseHTML = "<h3>Responses:</h3>";
+            responses.forEach(r => {
+                responseHTML += `<p><strong>${r.player}:</strong> ${r.answer}</p>`;
+            });
+            document.getElementById("responses").innerHTML = responseHTML;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+    </script>
+</body>
+</html>
