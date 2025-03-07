@@ -55,6 +55,10 @@
                 isHost = true;
                 document.getElementById("questionInputSection").style.display = "block";
             } else {
+                let savedQuestions = localStorage.getItem("questions");
+                if (savedQuestions) {
+                    questions = JSON.parse(savedQuestions);
+                }
                 document.getElementById("gameSection").style.display = "block";
                 displayQuestion();
             }
@@ -65,6 +69,7 @@
                 let customQuestions = document.getElementById("questionsInput").value.split("\n").filter(q => q.trim() !== "");
                 if (customQuestions.length > 0) {
                     questions = customQuestions;
+                    localStorage.setItem("questions", JSON.stringify(questions));
                 }
             }
 
