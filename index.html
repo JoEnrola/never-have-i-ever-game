@@ -78,7 +78,7 @@
             if (currentQuestionIndex < questions.length) {
                 document.getElementById("questionDisplay").innerText = questions[currentQuestionIndex];
                 responses = [];
-                document.getElementById("responses").innerHTML = "";
+                updateResponses();
             } else {
                 document.getElementById("questionDisplay").innerText = "Game Over!";
                 document.getElementById("responses").innerText = "Thanks for playing!";
@@ -100,6 +100,7 @@
 
         function nextQuestion() {
             currentQuestionIndex++;
+            responses = [];
             displayQuestion();
         }
     </script>
