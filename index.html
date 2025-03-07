@@ -39,6 +39,7 @@
         let currentQuestionIndex = 0;
         let playerName = "";
         let responses = [];
+        let isHost = false;
 
         function startGame() {
             questions = document.getElementById("questionsInput").value.split("\n").filter(q => q.trim() !== "");
@@ -46,6 +47,7 @@
                 alert("Please enter some questions!");
                 return;
             }
+            localStorage.setItem("questions", JSON.stringify(questions)); // Save for others
             document.getElementById("setupSection").style.display = "none";
             document.getElementById("joinSection").style.display = "block";
         }
@@ -58,6 +60,14 @@
             }
             document.getElementById("joinSection").style.display = "none";
             document.getElementById("gameSection").style.display = "block";
+
+            // Load questions from host if not already set
+            if (questions.length === 0) {
+                let savedQuestions = localStorage.getItem("questions");
+                if (savedQuestions) {
+                    questions = JSON.parse(savedQuestions);
+                }
+            }
             displayQuestion();
         }
 
@@ -89,6 +99,14 @@
             currentQuestionIndex++;
             displayQuestion();
         }
+
+        // Hide "Add Questions" if another player joins first
+        window.onload = function() {
+            if (localStorage.getItem("questions")) {
+                document.getElementById("setupSection").style.display = "none";
+                document.getElementById("joinSection").style.display = "block";
+            }
+        };
     </script>
 </body>
 </html>
