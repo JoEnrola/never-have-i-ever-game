@@ -62,9 +62,12 @@
                 let savedQuestions = localStorage.getItem("questions");
                 if (savedQuestions) {
                     questions = JSON.parse(savedQuestions);
+                    document.getElementById("gameSection").style.display = "block";
+                    displayQuestion();
+                } else {
+                    alert("Waiting for the host to start the game.");
+                    document.getElementById("joinSection").style.display = "block";
                 }
-                document.getElementById("gameSection").style.display = "block";
-                displayQuestion();
             }
         }
 
