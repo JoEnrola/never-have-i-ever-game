@@ -6,9 +6,10 @@
     <title>Never Have I Ever - Work Edition</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #joinSection, #gameSection { display: none; }
+        #joinSection, #gameSection, #shareLinkSection { display: none; }
         button { padding: 10px; margin: 10px; cursor: pointer; }
         .response { font-weight: bold; margin-top: 10px; }
+        #copyButton { display: block; margin: 10px auto; }
     </style>
 </head>
 <body>
@@ -17,7 +18,13 @@
     <div id="setupSection">
         <h3>Enter Questions (One per Line)</h3>
         <textarea id="questionsInput" rows="10" cols="50"></textarea><br>
-        <button onclick="startGame()">Start Game</button>
+        <button onclick="startGame()">Generate Game Link</button>
+    </div>
+
+    <div id="shareLinkSection">
+        <h3>Share this link with your team:</h3>
+        <input type="text" id="gameLink" readonly>
+        <button id="copyButton" onclick="copyLink()">Copy Link</button>
     </div>
 
     <div id="joinSection">
@@ -50,9 +57,18 @@
             // Encode questions into URL
             const encodedQuestions = encodeURIComponent(JSON.stringify(questions));
             const newURL = window.location.origin + window.location.pathname + "?questions=" + encodedQuestions;
-            
-            // Update URL and reload for all players to get the same questions
-            window.location.href = newURL;
+
+            // Show the generated link
+            document.getElementById("setupSection").style.display = "none";
+            document.getElementById("shareLinkSection").style.display = "block";
+            document.getElementById("gameLink").value = newURL;
+        }
+
+        function copyLink() {
+            const linkField = document.getElementById("gameLink");
+            linkField.select();
+            document.execCommand("copy");
+            alert("Game link copied! Share it with your team.");
         }
 
         function joinGame() {
@@ -95,7 +111,7 @@
             displayQuestion();
         }
 
-        // Check if questions exist in URL
+        // Load questions from URL
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const encodedQuestions = urlParams.get("questions");
