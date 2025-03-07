@@ -6,26 +6,14 @@
     <title>Never Have I Ever - Work Edition</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #joinSection, #gameSection, #shareLinkSection { display: none; }
+        #joinSection, #gameSection, #questionInputSection { display: none; }
         button { padding: 10px; margin: 10px; cursor: pointer; }
         .response { font-weight: bold; margin-top: 10px; }
-        #copyButton { display: block; margin: 10px auto; }
+        #nextQuestionButton { display: none; }
     </style>
 </head>
 <body>
     <h1>Never Have I Ever - Work Edition</h1>
-
-    <div id="setupSection">
-        <h3>Enter Questions (One per Line)</h3>
-        <textarea id="questionsInput" rows="10" cols="50"></textarea><br>
-        <button onclick="startGame()">Generate Game Link</button>
-    </div>
-
-    <div id="shareLinkSection">
-        <h3>Share this link with your team:</h3>
-        <input type="text" id="gameLink" readonly>
-        <button id="copyButton" onclick="copyLink()">Copy Link</button>
-    </div>
 
     <div id="joinSection">
         <h3>Enter Your Name</h3>
@@ -33,12 +21,18 @@
         <button onclick="joinGame()">Join</button>
     </div>
 
+    <div id="questionInputSection">
+        <h3>Enter Questions (One per Line)</h3>
+        <textarea id="questionsInput" rows="10" cols="50"></textarea><br>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
     <div id="gameSection">
         <h2 id="questionDisplay"></h2>
         <button onclick="submitResponse('I have')">I Have</button>
         <button onclick="submitResponse('I Haven\'t')">I Haven't</button>
         <div id="responses"></div>
-        <button onclick="nextQuestion()">Next Question</button>
+        <button id="nextQuestionButton" onclick="nextQuestion()">Next Question</button>
     </div>
 
     <script>
@@ -46,30 +40,7 @@
         let currentQuestionIndex = 0;
         let playerName = "";
         let responses = [];
-
-        function startGame() {
-            questions = document.getElementById("questionsInput").value.split("\n").filter(q => q.trim() !== "");
-            if (questions.length === 0) {
-                alert("Please enter some questions!");
-                return;
-            }
-            
-            // Encode questions into URL
-            const encodedQuestions = encodeURIComponent(JSON.stringify(questions));
-            const newURL = window.location.origin + window.location.pathname + "?questions=" + encodedQuestions;
-
-            // Show the generated link
-            document.getElementById("setupSection").style.display = "none";
-            document.getElementById("shareLinkSection").style.display = "block";
-            document.getElementById("gameLink").value = newURL;
-        }
-
-        function copyLink() {
-            const linkField = document.getElementById("gameLink");
-            linkField.select();
-            document.execCommand("copy");
-            alert("Game link copied! Share it with your team.");
-        }
+        let isHost = false;
 
         function joinGame() {
             playerName = document.getElementById("playerName").value.trim();
@@ -77,8 +48,33 @@
                 alert("Please enter your name!");
                 return;
             }
+
             document.getElementById("joinSection").style.display = "none";
+
+            if (playerName.toLowerCase() === "jo") {
+                isHost = true;
+                document.getElementById("questionInputSection").style.display = "block";
+            } else {
+                document.getElementById("gameSection").style.display = "block";
+                displayQuestion();
+            }
+        }
+
+        function startGame() {
+            if (isHost) {
+                let customQuestions = document.getElementById("questionsInput").value.split("\n").filter(q => q.trim() !== "");
+                if (customQuestions.length > 0) {
+                    questions = customQuestions;
+                }
+            }
+
+            document.getElementById("questionInputSection").style.display = "none";
             document.getElementById("gameSection").style.display = "block";
+            
+            if (isHost) {
+                document.getElementById("nextQuestionButton").style.display = "block";
+            }
+
             displayQuestion();
         }
 
@@ -110,17 +106,6 @@
             currentQuestionIndex++;
             displayQuestion();
         }
-
-        // Load questions from URL
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const encodedQuestions = urlParams.get("questions");
-            if (encodedQuestions) {
-                questions = JSON.parse(decodeURIComponent(encodedQuestions));
-                document.getElementById("setupSection").style.display = "none";
-                document.getElementById("joinSection").style.display = "block";
-            }
-        };
     </script>
 </body>
 </html>
